@@ -98,6 +98,7 @@ data "ignition_systemd_unit" "service" {
         localDocumentRoot="" \
         proxyAddress="0.0.0.0" \
         proxyPort="${var.proxy_port}" \
+        tunnelAllowedPorts=22,80,109-110,143,443,873,993,995,2401,5222-5223,6443,9418 \
         allowedClients=${join(",", var.allowed_cidr)} \
         authCredentials="${var.proxy_user}:${var.proxy_pass}"
     ExecStop=-/usr/bin/rkt stop --uuid-file="/var/cache/polipo-service.uuid"
