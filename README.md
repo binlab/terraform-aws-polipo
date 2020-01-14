@@ -236,7 +236,8 @@
   - Final testing of Proxy work can be reached by this:
 
     ```shell
-    $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 curl -v https://httpbin.org/ip
+    $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
+      curl -v https://httpbin.org/ip
     ```
 
 ---
