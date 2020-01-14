@@ -237,7 +237,7 @@
 
     ```shell
     $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
-      curl -v https://httpbin.org/ip
+        curl -v https://httpbin.org/ip
     ```
 
 ---
