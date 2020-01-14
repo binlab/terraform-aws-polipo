@@ -218,47 +218,42 @@
 
   - After `terraform apply` output should be like this:
 
+    ```shell
+    ...
+    Outputs:
 
-  ```shell
-  ...
-  Outputs:
-
-  polipo_uri = https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443
-  public_dns = ec2-54-xxx-xxx-123.eu-west-1.compute.amazonaws.com
-  public_ip = 54.xxx.xxx.123
-  ```
+    polipo_uri = https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443
+    public_dns = ec2-54-xxx-xxx-123.eu-west-1.compute.amazonaws.com
+    public_ip = 54.xxx.xxx.123
+    ```
 
   - To testing SSH connection to EC2 Instance you can run:
 
-
-  ```shell
-  $ ssh -i .ssh_rsa -p 22 core@54.xxx.xxx.123
-  ```
+    ```shell
+    $ ssh -i .ssh_rsa -p 22 core@54.xxx.xxx.123
+    ```
 
   - Final testing of Proxy work can be reached by this:
 
-
-  ```shell
-  $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 curl -v https://httpbin.org/ip
-  ```
+    ```shell
+    $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 curl -v https://httpbin.org/ip
+    ```
 
 ---
 * **Example of how this proxy can help to connect into `Kubernetes` inside an infrastructure:**
 
   - Access to `Kubernetes` in internal infrastructure (with any internal domain e.g. `*.internal`):
 
-
-  ```shell
-  $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
-      kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
-      get nodes
-  ```
+    ```shell
+    $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
+        kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
+        get nodes
+    ```
 
   - Even with `exec` forwarding to `pod` container:
 
-
-  ```shell
-  $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
-      kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
-      -n application -c application-phpfpm exec -it application-5721d8ac94-dsavr -- sh
-  ```
+    ```shell
+    $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
+        kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
+        -n application -c application-phpfpm exec -it application-5721d8ac94-dsavr -- sh
+    ```
