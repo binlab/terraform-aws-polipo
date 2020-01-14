@@ -1,6 +1,6 @@
 # Terraform module to running HTTP/HTTPS Proxy service based on Polipo proxy
 
-*This proxy can help in cases when you need to obtain access to the internal network (with internal domain name resolving), wrap network of the service to predictable NAT external IP calls or just a simple proxy for general use. An instance provisioning going with AMI (`Flatcar/CoreOS`) and applying in time of start using `user_data` (JSON) provisioning by `CoreOS` Ignitions*
+*This proxy can help in cases when you need to obtain access to the resources in an internal network e.g. `Kubernetes` (with internal domain name resolving e.g. `*.internal`), wrap network of the service to predictable NAT external IP calls or just a simple proxy for general use. An instance provisioning going with AMI (`Flatcar/CoreOS`) and applying in time of start using `user_data` (JSON) provisioning by `CoreOS` Ignitions*
 
 * __Don't use `dev`, `master` or other branches for production use. Always to fix a codebase of a module by tag version - `v1.0.0`. e.g. `git@github.com:binlab/terraform-aws-polipo.git?ref=v1.0.0`__
 
@@ -84,7 +84,7 @@
   ### Creating EC2 Instance for Polipo Proxy Service
 
   module "polipo" {
-    source = "git@github.com:binlab/terraform-aws-polipo.git?ref=dev"
+    source = "git@github.com:binlab/terraform-aws-polipo.git?ref=master"
 
     key_name = aws_key_pair.polipo.key_name
 
@@ -216,7 +216,7 @@
   }
   ```
 
-* After `terraform apply` output should be like this:
+  * After `terraform apply` output should be like this:
 
   ```shell
   ...
@@ -227,14 +227,33 @@
   public_ip = 54.xxx.xxx.123
   ```
 
-* To testing SSH connection to EC2 Instance you can run:
+  * To testing SSH connection to EC2 Instance you can run:
 
   ```shell
   $ ssh -i .ssh_rsa -p 22 core@54.xxx.xxx.123
   ```
 
-* Final testing of Proxy work can be reached by this:
+  * Final testing of Proxy work can be reached by this:
 
   ```shell
   $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 curl -v https://httpbin.org/ip
+  ```
+
+---
+* **Example of how this proxy can help to connect into `Kubernetes` inside an infrastructure:**
+
+  * Access to `Kubernetes` in internal infrastructure (with any internal domain e.g. `*.internal`):
+
+  ```shell
+  $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
+      kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
+      get nodes
+  ```
+
+  * Even with `exec` forwarding to `pod` container:
+
+  ```shell
+  $ HTTPS_PROXY=https://Username:HJZyhOio6Nob4YZySyIQ@polipo.demo.io:443 \
+      kubectl --kubeconfig=${HOME}/.kube/kubeconfig --insecure-skip-tls-verify \
+      -n application -c application-phpfpm exec -it application-5721d8ac94-dsavr -- sh
   ```
