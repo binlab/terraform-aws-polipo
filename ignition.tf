@@ -75,10 +75,10 @@ data "ignition_file" "ca_ssh_public_key" {
 }
 
 data "ignition_file" "ca_tls_public_key" {
-  count = var.ca_tls_public_key == "false" ? 0 : 1
+  count = var.ca_tls_public_key != "false" ? 1 : 0
 
   filesystem = "root"
-  path       = "/etc/ssl/certs/ca_cert_int_chain.cert" # path       = "/etc/ssl/certs/ca-root.pem"
+  path       = "/etc/ssl/certs/ca-root.pem" # path       = "/etc/ssl/certs/ca-root.pem"
   mode       = 420                                     ### 0644
   uid        = 0
   gid        = 0
@@ -101,6 +101,7 @@ data "ignition_systemd_unit" "service" {
       --mount volume=polipo-cache,target=/var/cache/polipo \
       --volume polipo-www,kind=empty,readOnly=true \
       --mount volume=polipo-www,target=/usr/share/polipo/www \
+      ${var.ca_tls_public_key != "false" ? "--volume ca-root,kind=host,source=/etc/ssl/certs/ca-root.pem,readOnly=true --mount volume=ca-root,target=/etc/ssl/certs/ca-root.pem" : ""} \
       docker://${var.docker_image} \
       --name=polipo \
       --net=host \
