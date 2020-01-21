@@ -74,6 +74,20 @@ data "ignition_file" "ca_ssh_public_key" {
   }
 }
 
+data "ignition_file" "ca_tls_public_key" {
+  count = var.ca_tls_public_key == "false" ? 0 : 1
+
+  filesystem = "root"
+  path       = "/etc/ssl/certs/ca_cert_int_chain.cert" # path       = "/etc/ssl/certs/ca-root.pem"
+  mode       = 420                                     ### 0644
+  uid        = 0
+  gid        = 0
+  content {
+    mime    = "text/plain"
+    content = var.ca_tls_public_key
+  }
+}
+
 data "ignition_systemd_unit" "service" {
   name    = "polipo.service"
   content = <<-EOT
@@ -119,6 +133,7 @@ data "ignition_config" "polipo" {
     data.ignition_file.auth_principals_core.rendered,
     data.ignition_file.auth_principals_admin.rendered,
     data.ignition_file.ca_ssh_public_key.rendered,
+    data.ignition_file.ca_tls_public_key.rendered,
   ]
   systemd = [
     data.ignition_systemd_unit.service.rendered,

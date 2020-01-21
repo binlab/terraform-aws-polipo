@@ -77,6 +77,12 @@ variable "ca_ssh_public_key" {
   type        = string
 }
 
+variable "ca_tls_public_key" {
+  description = "Custom Certificate Authority - TLS Public Key"
+  type        = string
+  default     = "false"
+}
+
 variable "tags" {
   description = "Map of Tags"
   type        = map(string)
